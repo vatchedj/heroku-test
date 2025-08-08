@@ -10,7 +10,7 @@
     [ring.middleware.session.cookie :as cookie]
     [ring.adapter.jetty :as jetty]
     [ring.middleware.basic-authentication :as basic]
-    [cemerick.drawbridge :as drawbridge]
+    #_[cemerick.drawbridge :as drawbridge]
     [environ.core :refer [env]]))
 
 (def pg-db
@@ -26,13 +26,13 @@
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
   (= [user pass] [(env :repl-user false) (env :repl-password false)]))
 
-(def ^:private drawbridge
+#_(def ^:private drawbridge
   (-> (drawbridge/ring-handler)
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
 (defroutes app
-  (ANY "/repl" {:as req}
+  #_(ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
     (let [test-val (-> (jdbc/query pg-db ["SELECT user from test"])
