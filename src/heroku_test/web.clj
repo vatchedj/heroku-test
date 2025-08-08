@@ -14,8 +14,16 @@
     [environ.core :refer [env]]))
 
 
-(def pg-db
+#_(def db-spec
   {:connection-uri (str "jdbc:" (env :database-url))})
+
+(def db-spec
+  {:dbtype   "postgresql"
+   :dbname   (System/getenv "postgres-db")
+   :user     (System/getenv "postgres-user")
+   :password (System/getenv "postgres-password")
+   :host     (System/getenv "pghost")
+   :port     (System/getenv "pgport")})
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -30,8 +38,8 @@
   #_(ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
-    (println "pg-db" pg-db)
-    (let [test-val (-> (jdbc/query pg-db ["SELECT user from test"])
+    (println "db-spec" db-spec)
+    (let [test-val (-> (jdbc/query db-spec ["SELECT user from test"])
                        first)]
       {:status  200
        :headers {"Content-Type" "text/plain"}
