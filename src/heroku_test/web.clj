@@ -39,8 +39,9 @@
        (drawbridge req))
   (GET "/" []
     (println "db-spec" db-spec)
-    (let [test-val (-> (jdbc/query db-spec ["SELECT user from test"])
-                       first)]
+    (let [test-val (-> (jdbc/query db-spec ["SELECT * from test"])
+                       first
+                       :description)]
       {:status  200
        :headers {"Content-Type" "text/plain"}
        :body    (pr-str ["Hello" :from 'Heroku test-val])}))
