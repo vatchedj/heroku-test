@@ -13,19 +13,9 @@
     #_[cemerick.drawbridge :as drawbridge]
     [environ.core :refer [env]]))
 
-#_(def pg-db
-  {:dbtype     "postgresql"
-   :dbname     (env :postgres-db)
-   :host       (env :pghost)
-   :user       (env :postgres-user)
-   :password   (env :postgres-password)
-   :ssl        true
-   :sslfactory "org.postgresql.ssl.NonValidatingFactory"})
-
-(print "System/getenv" (System/getenv))
 
 (def pg-db
-  {:connection-uri (env :database-url)})
+  {:connection-uri (str "jdbc:" (env :database-url))})
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
