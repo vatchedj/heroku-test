@@ -19,11 +19,11 @@
 
 (def db-spec
   {:dbtype   "postgresql"
-   :dbname   (System/getenv "postgres-db")
-   :user     (System/getenv "postgres-user")
-   :password (System/getenv "postgres-password")
-   :host     (System/getenv "pghost")
-   :port     (System/getenv "pgport")})
+   :dbname   (System/getenv "POSTGRES_DB")
+   :user     (System/getenv "POSTGRES_USER")
+   :password (System/getenv "POSTGRES_PASSWORD")
+   :host     (System/getenv "PGHOST")
+   :port     (System/getenv "PGPORT")})
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
