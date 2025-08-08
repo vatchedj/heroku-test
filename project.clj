@@ -13,7 +13,6 @@
                  [org.clojure/java.jdbc "0.7.12"]
                  [org.postgresql/postgresql "42.7.1"]]
   :min-lein-version "2.0.0"
-  :plugins [[environ/environ.lein "0.2.1"]]
-  :hooks [environ.leiningen.hooks]
+  :plugins [[lein-environ "1.2.0"]]
   :uberjar-name "heroku-test-standalone.jar"
   :profiles {:production {:env {:production true}}})

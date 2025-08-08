@@ -22,6 +22,8 @@
    :ssl        true
    :sslfactory "org.postgresql.ssl.NonValidatingFactory"})
 
+(print "System/getenv" (System/getenv))
+
 (def pg-db
   {:connection-uri (env :database-url)})
 
