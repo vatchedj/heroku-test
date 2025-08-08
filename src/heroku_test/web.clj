@@ -1,15 +1,26 @@
 (ns heroku-test.web
-  (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
-            [compojure.handler :refer [site]]
-            [compojure.route :as route]
-            [clojure.java.io :as io]
-            [ring.middleware.stacktrace :as trace]
-            [ring.middleware.session :as session]
-            [ring.middleware.session.cookie :as cookie]
-            [ring.adapter.jetty :as jetty]
-            [ring.middleware.basic-authentication :as basic]
-            [cemerick.drawbridge :as drawbridge]
-            [environ.core :refer [env]]))
+  (:require
+    [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
+    [compojure.handler :refer [site]]
+    [compojure.route :as route]
+    [clojure.java.io :as io]
+    [clojure.java.jdbc :as jdbc]
+    [ring.middleware.stacktrace :as trace]
+    [ring.middleware.session :as session]
+    [ring.middleware.session.cookie :as cookie]
+    [ring.adapter.jetty :as jetty]
+    [ring.middleware.basic-authentication :as basic]
+    [cemerick.drawbridge :as drawbridge]
+    [environ.core :refer [env]]))
+
+(def pg-db
+  {:dbtype     "postgresql"
+   :dbname     (env :postgres-db)
+   :host       (env :pghost)
+   :user       (env :postgres-user)
+   :password   (env :postgres-password)
+   :ssl        true
+   :sslfactory "org.postgresql.ssl.NonValidatingFactory"})
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -24,9 +35,11 @@
   (ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
-       {:status 200
-        :headers {"Content-Type" "text/plain"}
-        :body (pr-str ["Hello" :from 'Heroku])})
+    (let [test-val (-> (jdbc/query pg-db ["SELECT user from test"])
+                       first)]
+      {:status  200
+       :headers {"Content-Type" "text/plain"}
+       :body    (pr-str ["Hello" :from 'Heroku test-val])}))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
