@@ -38,6 +38,7 @@
   #_(ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
+    (println "pg-db" pg-db)
     (let [test-val (-> (jdbc/query pg-db ["SELECT user from test"])
                        first)]
       {:status  200
@@ -64,7 +65,7 @@
         (site {:session {:store store}}))))
 
 (defn -main [& [port]]
-  (let [port (Integer. (or port (env :port) 5000))]
+  (let [port (Integer. (or port (env :port) 8000))]
     (jetty/run-jetty (wrap-app #'app) {:port port :join? false})))
 
 ;; For interactive development:
